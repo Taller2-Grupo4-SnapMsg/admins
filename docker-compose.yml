@@ -1,0 +1,10 @@
+version: '3'
+services:
+  go-app:
+    image: golang:1.21.3-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ["go", "run", "controller/main.go"]
+    ports:
+      - "8080:8080"
