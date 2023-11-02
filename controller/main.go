@@ -2,7 +2,9 @@ package main
 
 import (
 	"admins/docs"
+	"admins/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -19,23 +21,58 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {string} Helloworld
-// @Router /example/helloworld [get]
+// @Router /admin/helloworld [get]
 func Helloworld(g *gin.Context) {
 	g.JSON(http.StatusOK, "helloworld")
 }
 
+// @BasePath /api/v1
+
+// SaveNumber godoc
+// @Summary Test function for saving a number
+// @Schemes
+// @Description saves a number on a list
+// @Tags example
+// @Accept json
+// @Produce json
+// @Param number query int true "Number to be saved" Format(int)
+// @Success 200 {string} Number saved
+// @Router /admin/numbers [post]
+func SaveNumber(gin_context *gin.Context) {
+	number, _ := strconv.Atoi(gin_context.Query("number"))
+	service.SaveNumber(number)
+	gin_context.JSON(http.StatusOK, "Number saved")
+}
+
+// @BasePath /api/v1
+
+// GetNumbers godoc
+// @Summary Test function for getting a list of numbers
+// @Schemes
+// @Description gets a list of numbers
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {list} List of numbers
+// @Router /admin/numbers [get]
+func GetNumbers(gin_context *gin.Context) {
+	gin_context.JSON(http.StatusOK, service.GetNumbers())
+}
+
 func main() {
-	r := gin.Default()
+	router := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"
-	v1 := r.Group("/api/v1")
+	v1 := router.Group("/api/v1")
 	{
-		eg := v1.Group("/example")
+		admin := v1.Group("/admin")
 		{
-			eg.GET("/helloworld", Helloworld)
+			admin.GET("/helloworld", Helloworld)
+			admin.POST("/numbers", SaveNumber)
+			admin.GET("/numbers", GetNumbers)
 		}
 	}
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	error := r.Run(":8080")
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	error := router.Run(":8080")
 	if error != nil {
 		panic(error)
 	} // if we have an error we raise an exception
