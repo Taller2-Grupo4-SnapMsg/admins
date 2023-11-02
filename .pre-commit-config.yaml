@@ -6,3 +6,8 @@ repos:
     -   id: go-imports
     -   id: golangci-lint
     -   id: go-unit-tests
+    -   id: go-vet
+-   repo: https://github.com/Bahjat/pre-commit-golang
+    rev: v1.0.2
+    hooks:
+    - id: go-static-check # install https://staticcheck.io/docs/
