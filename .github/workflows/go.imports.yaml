@@ -1,0 +1,29 @@
+# Chattie:
+name: Go Imports Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  go-imports-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.21
+
+    - name: Install goimports
+      run: go get golang.org/x/tools/cmd/goimports
+
+    - name: Run goimports
+      run: goimports -l . | read && echo "Go code has import formatting issues" && exit 1 || exit 0
