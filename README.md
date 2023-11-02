@@ -42,3 +42,12 @@ sudo apt install golang-golang-x-tools
 ```bash
 sudo snap install golangci-lint   
 ```
+
+## Swagger:
+Segui los pasos de aca:
+https://github.com/swaggo/gin-swagger
+
+Para actualizar la documentacion:
+```bash
+swag init
+```
