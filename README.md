@@ -1,5 +1,11 @@
 # admins
 Back end del microservicio de administradores.
+## Agregar esto a tu bashrc:
+`export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin`
+
+
+## Link del swagger
+`http://localhost:8080/swagger/index.html`
 
 # Link Mongo:
 `mongodb+srv://admin:<password>@taller-admins.ez0xrnf.mongodb.net/?retryWrites=true&w=majority`
@@ -43,7 +49,7 @@ sudo apt install golang-golang-x-tools
 ```
 ## golangci-lint:
 ```bash
-sudo snap install golangci-lint   
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2
 ```
 
 ## Swagger:
