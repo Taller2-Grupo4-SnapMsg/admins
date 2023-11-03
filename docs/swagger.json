@@ -37,7 +37,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
                 "summary": "Test function for getting a list of numbers",
                 "responses": {
@@ -58,7 +58,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
                 "summary": "Test function for saving a number",
                 "parameters": [

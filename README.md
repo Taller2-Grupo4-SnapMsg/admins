@@ -1,6 +1,9 @@
 # admins
 Back end del microservicio de administradores.
 
+# Link Mongo:
+`mongodb+srv://admin:<password>@taller-admins.ez0xrnf.mongodb.net/?retryWrites=true&w=majority`
+
 # tests:
 ```bash
 go test -v ./...

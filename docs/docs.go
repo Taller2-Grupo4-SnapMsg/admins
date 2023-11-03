@@ -48,7 +48,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
                 "summary": "Test function for getting a list of numbers",
                 "responses": {
@@ -69,7 +69,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
                 "summary": "Test function for saving a number",
                 "parameters": [

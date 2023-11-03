@@ -32,7 +32,7 @@ func Helloworld(g *gin.Context) {
 // @Summary Test function for saving a number
 // @Schemes
 // @Description saves a number on a list
-// @Tags example
+// @Tags admin
 // @Accept json
 // @Produce json
 // @Param number query int true "Number to be saved" Format(int)
@@ -40,7 +40,7 @@ func Helloworld(g *gin.Context) {
 // @Router /admin/numbers [post]
 func SaveNumber(gin_context *gin.Context) {
 	number, _ := strconv.Atoi(gin_context.Query("number"))
-	service.SaveNumber(number)
+	service.SaveNumber(int32(number))
 	gin_context.JSON(http.StatusOK, "Number saved")
 }
 
@@ -50,7 +50,7 @@ func SaveNumber(gin_context *gin.Context) {
 // @Summary Test function for getting a list of numbers
 // @Schemes
 // @Description gets a list of numbers
-// @Tags example
+// @Tags admin
 // @Accept json
 // @Produce json
 // @Success 200 {list} List of numbers

@@ -2,10 +2,10 @@ package service
 
 import "admins/repository"
 
-func SaveNumber(number int) {
+func SaveNumber(number int32) {
 	repository.SaveNumber(number)
 }
 
-func GetNumbers() []int {
+func GetNumbers() []int32 {
 	return repository.GetNumbers()
 }

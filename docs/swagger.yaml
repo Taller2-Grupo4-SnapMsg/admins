@@ -30,7 +30,7 @@ paths:
             type: list
       summary: Test function for getting a list of numbers
       tags:
-      - example
+      - admin
     post:
       consumes:
       - application/json
@@ -51,5 +51,5 @@ paths:
             type: string
       summary: Test function for saving a number
       tags:
-      - example
+      - admin
 swagger: "2.0"
