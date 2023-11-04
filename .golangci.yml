@@ -1,0 +1,5 @@
+linters-settings:
+  exclude-use-default: true
+run:
+  exclude:
+    - mongodb-data/diagnostic.data/

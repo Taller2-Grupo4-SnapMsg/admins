@@ -8,3 +8,17 @@ services:
     command: ["go", "run", "controller/main.go"]
     ports:
       - "8080:8080"
+    depends_on:
+      - mongo-db
+    environment:
+      DB_URI: mongodb://mongo-db:27017
+
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb-data:/data/db
+
+volumes:
+  mongodb-data:

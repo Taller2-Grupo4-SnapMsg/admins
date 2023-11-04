@@ -1,6 +1,76 @@
 info:
   contact: {}
 paths:
+  /admin:
+    delete:
+      consumes:
+      - application/json
+      description: deletes an admin from the database
+      parameters:
+      - description: Email of the admin
+        format: email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Function used to delete an admin
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: gets an admin from the database
+      parameters:
+      - description: Email of the admin
+        format: email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Function used to get an admin
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: saves an admin on the database
+      parameters:
+      - description: Email of the admin
+        format: email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Password of the admin
+        format: password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Function used to save an admin
+      tags:
+      - admin
   /admin/helloworld:
     get:
       consumes:
