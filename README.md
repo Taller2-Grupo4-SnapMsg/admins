@@ -51,6 +51,12 @@ sudo apt install golang-golang-x-tools
 ```bash
 curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2
 ```
+## Staticcheck:
+```bash
+go install honnef.co/go/tools/cmd/staticcheck@latest
+```
+Se corre con
+`saticcheck ./...`
 
 ## Swagger:
 Segui los pasos de aca:

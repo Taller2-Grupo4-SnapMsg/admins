@@ -13,7 +13,6 @@ type NumberStruct struct {
 }
 
 var (
-	client_global     *mongo.Client
 	collection_global *mongo.Collection
 	connected         bool
 )
