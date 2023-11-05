@@ -3,6 +3,7 @@ package service
 import (
 	"admins/repository"
 	"admins/structs"
+	"time"
 )
 
 /**
@@ -13,8 +14,9 @@ import (
  */
 func SaveAdmin(email string, password string) (*structs.AdminStruct, error) {
 	admin := &structs.AdminStruct{
-		Email:    email,
-		Password: password,
+		Email:     email,
+		Password:  password,
+		TimeStamp: time.Now().Unix(),
 	} // refference for efficiency
 	return repository.SaveAdmin(admin)
 }
@@ -42,21 +44,4 @@ func DeleteAdmin(email string) (string, error) {
 		return "Admin not found", nil
 	}
 	return "Admin deleted", nil
-}
-
-/**
- * This function saves a number on the database.
- * @param number The number to be saved.
- * @return void
- */
-func SaveNumber(number int32) {
-	repository.SaveNumber(number)
-}
-
-/**
- * This function gets a list of numbers from the database.
- * @return []int32 The list of numbers.
- */
-func GetNumbers() []int32 {
-	return repository.GetNumbers()
 }

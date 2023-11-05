@@ -1,3 +1,4 @@
+basePath: /api/v1
 info:
   contact: {}
 paths:
@@ -20,7 +21,7 @@ paths:
           description: OK
           schema:
             type: string
-      summary: Function used to delete an admin
+      summary: Endpoint used to delete an admin
       tags:
       - admin
     get:
@@ -41,7 +42,7 @@ paths:
           description: OK
           schema:
             type: string
-      summary: Function used to get an admin
+      summary: Endpoint used to get an admin
       tags:
       - admin
     post:
@@ -68,58 +69,7 @@ paths:
           description: OK
           schema:
             type: string
-      summary: Function used to save an admin
-      tags:
-      - admin
-  /admin/helloworld:
-    get:
-      consumes:
-      - application/json
-      description: do ping
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: ping example
-      tags:
-      - example
-  /admin/numbers:
-    get:
-      consumes:
-      - application/json
-      description: gets a list of numbers
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: list
-      summary: Test function for getting a list of numbers
-      tags:
-      - admin
-    post:
-      consumes:
-      - application/json
-      description: saves a number on a list
-      parameters:
-      - description: Number to be saved
-        format: int
-        in: query
-        name: number
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: Test function for saving a number
+      summary: Endpoint used to save an admin
       tags:
       - admin
 swagger: "2.0"

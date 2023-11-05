@@ -1,10 +1,16 @@
-name: Go Unit Tests
+name: Go Test + Coverage
 
 on: [push, pull_request]
 
 jobs:
   go-unit-tests:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        options: --health-cmd "mongo --version" --health-interval 10s --health-timeout 5s --health-retries 3
 
     steps:
     - name: Checkout code
@@ -14,11 +20,33 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.21
-    - name: Get temporary mongo db running
-      run: docker run -d -p 27017:27017 mongo
+
+    - name: Wait for Mongo to be ready
+      run: |
+        while ! nc -z localhost 27017; do  
+          echo "Waiting for the database to be ready" 
+          sleep 1
+        done
 
     - name: export DB_URI
       run: export DB_URI=mongodb://localhost:27017
 
-    - name: Run Go unit tests
-      run: go test ./...
+    - name: Check for coverage
+      run: |
+        COVERAGE_THRESHOLD="80"
+        COVERAGE_OUTPUT=$(go test ./... -covermode=atomic 2>&1)
+        LAST_COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -oE 'coverage: [0-9.]+%' | awk -F'[ %]' '{print $2}')
+        
+        if [ -z "$LAST_COVERAGE" ]; then
+          echo "No coverage data found in the test output."
+          exit 1
+        fi
+
+        if (( $(awk -v last="$LAST_COVERAGE" -v threshold="$COVERAGE_THRESHOLD" 'BEGIN { print (last < threshold) }') )); then
+          echo "Code coverage is less than $COVERAGE_THRESHOLD%"
+          echo "Coverage: $LAST_COVERAGE%"
+          exit 1
+        else
+          echo "Code coverage is greater than or equal to $COVERAGE_THRESHOLD%"
+          echo "Coverage: $LAST_COVERAGE%"
+        fi

@@ -4,7 +4,6 @@ import (
 	"admins/docs"
 	"admins/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -13,56 +12,8 @@ import (
 
 // @BasePath /api/v1
 
-// PingExample godoc
-// @Summary ping example
-// @Schemes
-// @Description do ping
-// @Tags example
-// @Accept json
-// @Produce json
-// @Success 200 {string} Helloworld
-// @Router /admin/helloworld [get]
-func Helloworld(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
-}
-
-// @BasePath /api/v1
-
-// SaveNumber godoc
-// @Summary Test function for saving a number
-// @Schemes
-// @Description saves a number on a list
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Param number query int true "Number to be saved" Format(int)
-// @Success 200 {string} Number saved
-// @Router /admin/numbers [post]
-func SaveNumber(gin_context *gin.Context) {
-	number, _ := strconv.Atoi(gin_context.Query("number"))
-	service.SaveNumber(int32(number))
-	gin_context.JSON(http.StatusOK, "Number saved")
-}
-
-// @BasePath /api/v1
-
-// GetNumbers godoc
-// @Summary Test function for getting a list of numbers
-// @Schemes
-// @Description gets a list of numbers
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Success 200 {list} List of numbers
-// @Router /admin/numbers [get]
-func GetNumbers(gin_context *gin.Context) {
-	gin_context.JSON(http.StatusOK, service.GetNumbers())
-}
-
-// @BasePath /api/v1
-
 // SaveAdmin godoc
-// @Summary Function used to save an admin
+// @Summary Endpoint used to save an admin
 // @Schemes
 // @Description saves an admin on the database
 // @Tags admin
@@ -86,7 +37,7 @@ func SaveAdmin(gin_context *gin.Context) {
 // @BasePath /api/v1
 
 // GetAdmin godoc
-// @Summary Function used to get an admin
+// @Summary Endpoint used to get an admin
 // @Schemes
 // @Description gets an admin from the database
 // @Tags admin
@@ -108,7 +59,7 @@ func GetAdmin(gin_context *gin.Context) {
 // @BasePath /api/v1
 
 // DeleteAdmin godoc
-// @Summary Function used to delete an admin
+// @Summary Endpoint used to delete an admin
 // @Schemes
 // @Description deletes an admin from the database
 // @Tags admin
@@ -134,9 +85,6 @@ func main() {
 	{
 		admin := v1.Group("/admin")
 		{
-			admin.GET("/helloworld", Helloworld)
-			admin.POST("/numbers", SaveNumber)
-			admin.GET("/numbers", GetNumbers)
 			admin.POST("/", SaveAdmin)
 			admin.GET("/", GetAdmin)
 			admin.DELETE("/", DeleteAdmin)

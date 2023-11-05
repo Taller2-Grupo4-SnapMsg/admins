@@ -10,15 +10,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type NumberStruct struct {
-	Number int32
-}
-
 var (
 	collection_global *mongo.Collection
 	connected         bool
 )
 
+/**
+ * This function connects to the database.
+ * @return void.
+ */
 func Connect() {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(os.Getenv("DB_URI")).SetServerAPIOptions(serverAPI)
@@ -28,18 +28,6 @@ func Connect() {
 		panic(err)
 	}
 	collection_global = client.Database("admins").Collection("admins")
-	connected = true
-}
-
-func ConnectToNumbers() {
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(os.Getenv("DB_URI")).SetServerAPIOptions(serverAPI)
-	// Create a new client and connect to the server
-	client, err := mongo.Connect(context.Background(), opts)
-	if err != nil {
-		panic(err)
-	}
-	collection_global = client.Database("numbers").Collection("numbers")
 	connected = true
 }
 
@@ -97,31 +85,4 @@ func DeleteAdmin(email string) (int64, error) {
 		panic(err)
 	}
 	return delete_result.DeletedCount, nil
-}
-
-func SaveNumber(number int32) {
-	if !connected {
-		ConnectToNumbers()
-	}
-	doc := NumberStruct{Number: number}
-
-	_, err := collection_global.InsertOne(context.Background(), doc)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func GetNumbers() []int32 {
-	if !connected {
-		ConnectToNumbers()
-	}
-	var result []int32
-	numbers, error := collection_global.Distinct(context.Background(), "number", bson.D{})
-	if error != nil {
-		panic(error)
-	}
-	for _, number := range numbers {
-		result = append(result, number.(int32))
-	}
-	return result
 }

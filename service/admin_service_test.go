@@ -1,7 +1,6 @@
-package main
+package service
 
 import (
-	"admins/service"
 	"testing"
 )
 
@@ -23,7 +22,26 @@ func TestSaveAdminAdminIsSaved(t *testing.T) {
 	email := EMAIL
 	password := PASSWORD
 	// Act
-	admin, _ := service.SaveAdmin(email, password)
+	admin, _ := SaveAdmin(email, password)
+	// Assert
+	if admin.Email != email {
+		t.Errorf("Email should be %s", email)
+	}
+}
+
+func TestGetAdminAdminIsFound(t *testing.T) {
+	// This test checks if an admin is found
+	// Arrange
+	email := EMAIL
+	password := PASSWORD
+	// Act
+	admin_save, _ := SaveAdmin(email, password)
+
+	if admin_save == nil {
+		t.Errorf("Admin should be saved")
+	}
+
+	admin := GetAdmin(email)
 	// Assert
 	if admin.Email != email {
 		t.Errorf("Email should be %s", email)
