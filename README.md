@@ -23,6 +23,10 @@ Para correr los tests:
 ```bash
 go test -v ./...
 ```
+Coverage:
+```bash
+bash test_coverage.sh
+```
 
 # format:
 Para ver errores de formateo:
