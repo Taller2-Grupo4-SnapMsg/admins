@@ -35,11 +35,9 @@ jobs:
           echo "Database failed to start"
           exit 1
         fi
-
-    - name: export DB_URI
-      run: export DB_URI=mongodb://localhost:27017
     
     - name: Run tests
+      run: export DB_URI=mongodb://localhost:27017
       run: go test -v ./...
     # - name: Check for coverage
     #   run: |
