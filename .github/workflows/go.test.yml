@@ -36,7 +36,7 @@ jobs:
           exit 1
         fi
         echo "Database is ready"
-        
+
     - name: Check for coverage
       run: |
         export DB_URI="mongodb://localhost:27017"
@@ -56,12 +56,10 @@ jobs:
 
                     echo "Code coverage is less than $COVERAGE_THRESHOLD% for the package: $PACKAGE"
                     # Set red color for the output
-                    tput setaf 1
                     echo "Coverage: $CURRENT_COVERAGE"
                     exit 1
                 else
                     # Set green color for the output
-                    tput setaf 2
                     echo "Code coverage is greater than or equal to $COVERAGE_THRESHOLD% for the package: $PACKAGE"
                     echo "Coverage: $CURRENT_COVERAGE"
                 fi
