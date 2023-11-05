@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/helloworld": {
+        "/admin": {
             "get": {
-                "description": "do ping",
+                "description": "gets an admin from the database",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,9 +25,19 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
-                "summary": "ping example",
+                "summary": "Endpoint used to get an admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email of the admin",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -36,11 +46,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/admin/numbers": {
-            "get": {
-                "description": "gets a list of numbers",
+            },
+            "post": {
+                "description": "saves an admin on the database",
                 "consumes": [
                     "application/json"
                 ],
@@ -48,20 +56,38 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
-                "summary": "Test function for getting a list of numbers",
+                "summary": "Endpoint used to save an admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email of the admin",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "password",
+                        "description": "Password of the admin",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "list"
+                            "type": "string"
                         }
                     }
                 }
             },
-            "post": {
-                "description": "saves a number on a list",
+            "delete": {
+                "description": "deletes an admin from the database",
                 "consumes": [
                     "application/json"
                 ],
@@ -69,15 +95,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "admin"
                 ],
-                "summary": "Test function for saving a number",
+                "summary": "Endpoint used to delete an admin",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "format": "int",
-                        "description": "Number to be saved",
-                        "name": "number",
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email of the admin",
+                        "name": "email",
                         "in": "query",
                         "required": true
                     }
@@ -99,7 +125,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "",
 	Description:      "",

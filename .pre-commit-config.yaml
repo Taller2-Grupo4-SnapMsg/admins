@@ -5,6 +5,7 @@ repos:
     -   id: go-fmt
     -   id: go-imports
     -   id: golangci-lint
+        args: ['-v']
     -   id: go-unit-tests
     -   id: go-vet
 -   repo: https://github.com/Bahjat/pre-commit-golang

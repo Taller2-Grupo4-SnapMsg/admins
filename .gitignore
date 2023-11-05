@@ -19,3 +19,9 @@
 
 # Go workspace file
 go.work
+
+# Local volume:
+mongodb-data
+
+#coverage file:
+coverage.out

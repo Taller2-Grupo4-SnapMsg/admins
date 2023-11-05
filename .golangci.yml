@@ -1,0 +1,6 @@
+run:
+  skip-dirs-use-default: false
+  skip-dirs:
+    - ./mongodb-data
+  exclude:
+    - mongodb-data/diagnostic.data/

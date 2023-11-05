@@ -4,7 +4,6 @@ import (
 	"admins/docs"
 	"admins/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -13,50 +12,70 @@ import (
 
 // @BasePath /api/v1
 
-// PingExample godoc
-// @Summary ping example
+// SaveAdmin godoc
+// @Summary Endpoint used to save an admin
 // @Schemes
-// @Description do ping
-// @Tags example
+// @Description saves an admin on the database
+// @Tags admin
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
-// @Router /admin/helloworld [get]
-func Helloworld(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
+// @Param email query string true "Email of the admin" Format(email)
+// @Param password query string true "Password of the admin" Format(password)
+// @Success 200 {string} Admin saved
+// @Router /admin [post]
+func SaveAdmin(gin_context *gin.Context) {
+	email := gin_context.Query("email")
+	password := gin_context.Query("password")
+	admin, error := service.SaveAdmin(email, password)
+	if error != nil {
+		gin_context.JSON(http.StatusBadRequest, error)
+		return
+	}
+	gin_context.JSON(http.StatusOK, admin.Email+" is now an admin")
 }
 
 // @BasePath /api/v1
 
-// SaveNumber godoc
-// @Summary Test function for saving a number
+// GetAdmin godoc
+// @Summary Endpoint used to get an admin
 // @Schemes
-// @Description saves a number on a list
-// @Tags example
+// @Description gets an admin from the database
+// @Tags admin
 // @Accept json
 // @Produce json
-// @Param number query int true "Number to be saved" Format(int)
-// @Success 200 {string} Number saved
-// @Router /admin/numbers [post]
-func SaveNumber(gin_context *gin.Context) {
-	number, _ := strconv.Atoi(gin_context.Query("number"))
-	service.SaveNumber(number)
-	gin_context.JSON(http.StatusOK, "Number saved")
+// @Param email query string true "Email of the admin" Format(email)
+// @Success 200 {string} Admin found
+// @Router /admin [get]
+func GetAdmin(gin_context *gin.Context) {
+	email := gin_context.Query("email")
+	admin := service.GetAdmin(email)
+	if admin == nil {
+		gin_context.JSON(http.StatusNotFound, "Admin not found")
+		return
+	}
+	gin_context.JSON(http.StatusOK, admin)
 }
 
 // @BasePath /api/v1
 
-// GetNumbers godoc
-// @Summary Test function for getting a list of numbers
+// DeleteAdmin godoc
+// @Summary Endpoint used to delete an admin
 // @Schemes
-// @Description gets a list of numbers
-// @Tags example
+// @Description deletes an admin from the database
+// @Tags admin
 // @Accept json
 // @Produce json
-// @Success 200 {list} List of numbers
-// @Router /admin/numbers [get]
-func GetNumbers(gin_context *gin.Context) {
-	gin_context.JSON(http.StatusOK, service.GetNumbers())
+// @Param email query string true "Email of the admin" Format(email)
+// @Success 200 {string} Admin deleted
+// @Router /admin [delete]
+func DeleteAdmin(gin_context *gin.Context) {
+	email := gin_context.Query("email")
+	result, _ := service.DeleteAdmin(email)
+	if result == "Admin not found" {
+		gin_context.JSON(http.StatusBadRequest, result)
+		return
+	}
+	gin_context.JSON(http.StatusOK, email+" is no longer an admin")
 }
 
 func main() {
@@ -66,9 +85,9 @@ func main() {
 	{
 		admin := v1.Group("/admin")
 		{
-			admin.GET("/helloworld", Helloworld)
-			admin.POST("/numbers", SaveNumber)
-			admin.GET("/numbers", GetNumbers)
+			admin.POST("/", SaveAdmin)
+			admin.GET("/", GetAdmin)
+			admin.DELETE("/", DeleteAdmin)
 		}
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
