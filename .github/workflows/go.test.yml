@@ -35,37 +35,35 @@ jobs:
           echo "Database failed to start"
           exit 1
         fi
-    
-    - name: Run tests
+        echo "Database is ready"
+        
+    - name: Check for coverage
       run: |
-        export DB_URI=mongodb://localhost:27017
-        go test -v ./...
-    # - name: Check for coverage
-    #   run: |
-    #     COVERAGE_THRESHOLD="80"
-    #     COVERAGE_OUTPUT=$(go test ./... -covermode=atomic 2>&1)
+        export DB_URI="mongodb://localhost:27017"
+        COVERAGE_THRESHOLD="80"
+        COVERAGE_OUTPUT=$(go test ./... -covermode=atomic 2>&1)
 
-    #     # Initialize a flag to check if any coverage data was found
-    #     COVERAGE_FOUND=false
+        # Initialize a flag to check if any coverage data was found
+        COVERAGE_FOUND=false
 
-    #     # Iterate over each line of the output
-    #     while read -r line; do
-    #         CURRENT_COVERAGE=$(echo "$line" | grep -oE 'coverage: [0-9.]+%' | awk -F'[ %]' '{print $2}')
-    #         PACKAGE=$(echo "$line" | grep -oE 'admins/[a-zA-Z0-9_/]+' | awk -F'/' '{print $2}')
-    #         if [ -n "$CURRENT_COVERAGE" ]; then
-    #             COVERAGE_FOUND=true
-    #             if (( $(awk -v current="$CURRENT_COVERAGE" -v threshold="$COVERAGE_THRESHOLD" 'BEGIN { print (current < threshold) }') )); then
+        # Iterate over each line of the output
+        while read -r line; do
+            CURRENT_COVERAGE=$(echo "$line" | grep -oE 'coverage: [0-9.]+%' | awk -F'[ %]' '{print $2}')
+            PACKAGE=$(echo "$line" | grep -oE 'admins/[a-zA-Z0-9_/]+' | awk -F'/' '{print $2}')
+            if [ -n "$CURRENT_COVERAGE" ]; then
+                COVERAGE_FOUND=true
+                if (( $(awk -v current="$CURRENT_COVERAGE" -v threshold="$COVERAGE_THRESHOLD" 'BEGIN { print (current < threshold) }') )); then
 
-    #                 echo "Code coverage is less than $COVERAGE_THRESHOLD% for the package: $PACKAGE"
-    #                 # Set red color for the output
-    #                 tput setaf 1
-    #                 echo "Coverage: $CURRENT_COVERAGE"
-    #                 exit 1
-    #             else
-    #                 # Set green color for the output
-    #                 tput setaf 2
-    #                 echo "Code coverage is greater than or equal to $COVERAGE_THRESHOLD% for the package: $PACKAGE"
-    #                 echo "Coverage: $CURRENT_COVERAGE"
-    #             fi
-    #         fi
-    #     done <<< "$COVERAGE_OUTPUT"
+                    echo "Code coverage is less than $COVERAGE_THRESHOLD% for the package: $PACKAGE"
+                    # Set red color for the output
+                    tput setaf 1
+                    echo "Coverage: $CURRENT_COVERAGE"
+                    exit 1
+                else
+                    # Set green color for the output
+                    tput setaf 2
+                    echo "Code coverage is greater than or equal to $COVERAGE_THRESHOLD% for the package: $PACKAGE"
+                    echo "Coverage: $CURRENT_COVERAGE"
+                fi
+            fi
+        done <<< "$COVERAGE_OUTPUT"
