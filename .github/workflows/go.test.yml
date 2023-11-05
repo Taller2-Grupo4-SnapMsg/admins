@@ -37,8 +37,9 @@ jobs:
         fi
     
     - name: Run tests
-      run: export DB_URI=mongodb://localhost:27017
-      run: go test -v ./...
+      run: |
+        export DB_URI=mongodb://localhost:27017
+        go test -v ./...
     # - name: Check for coverage
     #   run: |
     #     COVERAGE_THRESHOLD="80"
