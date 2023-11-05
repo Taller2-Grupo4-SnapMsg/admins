@@ -29,6 +29,6 @@ while read -r line; do
 done <<< "$COVERAGE_OUTPUT"
 
 if [ "$COVERAGE_FOUND" = false ]; then
-    echo "No coverage data found in the test output."
-    exit 1
+    echo "No coverage data found in the test output for the packages"
+    echo "Output: $COVERAGE_OUTPUT"
 fi

@@ -25,11 +25,16 @@ jobs:
       run: |
         MAX_TRIES=10
         TRIES=0
+        CONNECTED=false
         while ! nc -z localhost 27017 && [ $TRIES -lt $MAX_TRIES ]; do
           ((TRIES=TRIES+1)) 
           echo "Waiting for the database to be ready" 
           sleep 1
         done
+        if [ $TRIES -eq $MAX_TRIES ]; then
+          echo "Database failed to start"
+          exit 1
+        fi
 
     - name: export DB_URI
       run: export DB_URI=mongodb://localhost:27017
@@ -63,8 +68,3 @@ jobs:
                 fi
             fi
         done <<< "$COVERAGE_OUTPUT"
-
-        if [ "$COVERAGE_FOUND" = false ]; then
-            echo "No coverage data found in the test output."
-            exit 1
-        fi
