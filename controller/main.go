@@ -62,13 +62,8 @@ func SaveAdmin(gin_context *gin.Context) {
 func GetAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
 	token := gin_context.GetHeader("token")
-	test, err := auth.GetMailFromToken(token)
-	if err != nil {
-		gin_context.JSON(http.StatusBadRequest, err)
-		return
-	}
-	if test != email {
-		gin_context.JSON(http.StatusBadRequest, "Token doesn't match email")
+	if !verify_token(token) {
+		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Token is not valid"})
 		return
 	}
 	admin := service.GetAdmin(email)
@@ -76,7 +71,7 @@ func GetAdmin(gin_context *gin.Context) {
 		gin_context.JSON(http.StatusNotFound, "Admin not found")
 		return
 	}
-	gin_context.JSON(http.StatusOK, admin)
+	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin found", "email": admin.Email, "Time stamp": admin.TimeStamp})
 }
 
 // @BasePath /api/v1
@@ -89,16 +84,60 @@ func GetAdmin(gin_context *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param email query string true "Email of the admin" Format(email)
+// @Param token header string true "Token for authentification" Format(token)
 // @Success 200 {string} Admin deleted
 // @Router /admin [delete]
 func DeleteAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
+	token := gin_context.GetHeader("token")
+	if !verify_token(token) {
+		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Token is not valid"})
+		return
+	}
 	result, _ := service.DeleteAdmin(email)
 	if result == "Admin not found" {
 		gin_context.JSON(http.StatusBadRequest, result)
 		return
 	}
 	gin_context.JSON(http.StatusOK, email+" is no longer an admin")
+}
+
+// @BasePath /api/v1
+
+// LogIn godoc
+// @Summary Endpoint used to log in an admin
+// @Schemes
+// @Description Given valid credentials, it returns a token
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param email query string true "Email of the admin" Format(email)
+// @Param password query string true "Password of the admin" Format(password)
+// @Success 200 {string} Log in succesful
+// @Router /admin/login [post]
+func LogIn(gin_context *gin.Context) {
+	email := gin_context.Query("email")
+	password := gin_context.Query("password")
+	admin := service.GetAdmin(email)
+	if admin == nil {
+		gin_context.JSON(http.StatusNotFound, "Incorrect Credentials")
+		return
+	}
+	if !auth.VerifyPassword(admin.Password, password) {
+		gin_context.JSON(http.StatusBadRequest, "Incorrect Credentials")
+		return
+	}
+	token, err := auth.GenerateTokenFromMail(email)
+	if err != nil {
+		gin_context.JSON(http.StatusInternalServerError, "Something went wrong.")
+		return
+	}
+	gin_context.JSON(http.StatusOK, gin.H{"message": "Log In Succesful", "token": token})
+}
+
+func verify_token(token string) bool {
+	_, err := auth.GetMailFromToken(token)
+	return err == nil
 }
 
 func main() {
@@ -109,6 +148,7 @@ func main() {
 		admin := v1.Group("/admin")
 		{
 			admin.POST("/", SaveAdmin)
+			admin.POST("/login", LogIn)
 			admin.GET("/", GetAdmin)
 			admin.DELETE("/", DeleteAdmin)
 		}
