@@ -36,6 +36,14 @@ const docTemplate = `{
                         "name": "email",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "token",
+                        "description": "Token of the admin",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -104,6 +112,55 @@ const docTemplate = `{
                         "format": "email",
                         "description": "Email of the admin",
                         "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "token",
+                        "description": "Token for authentification",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "description": "Given valid credentials, it returns a token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Endpoint used to log in an admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email of the admin",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "password",
+                        "description": "Password of the admin",
+                        "name": "password",
                         "in": "query",
                         "required": true
                     }

@@ -55,6 +55,15 @@ pre-commit run --all-files
 ```
 
 # Instalaciones:
+
+## golang-jwt:
+```bash
+go get -u github.com/golang-jwt/jwt/v5
+```
+## bcrypt:
+```bash
+go get -u golang.org/x/crypto/bcrypt
+```
 (linux)
 ## go-imports:
 ```bash
@@ -66,8 +75,8 @@ curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/insta
 ```
 Para que no te moleste con el volumen del docker-compose:
 ```bash
- sudo chmod +r mongodb-data/*
- ```
+sudo chmod +r mongodb-data/*
+```
 ## Staticcheck:
 ```bash
 go install honnef.co/go/tools/cmd/staticcheck@latest

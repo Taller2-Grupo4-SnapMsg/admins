@@ -14,6 +14,12 @@ paths:
         name: email
         required: true
         type: string
+      - description: Token for authentification
+        format: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -33,6 +39,12 @@ paths:
         format: email
         in: query
         name: email
+        required: true
+        type: string
+      - description: Token of the admin
+        format: token
+        in: header
+        name: token
         required: true
         type: string
       produces:
@@ -70,6 +82,34 @@ paths:
           schema:
             type: string
       summary: Endpoint used to save an admin
+      tags:
+      - admin
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Given valid credentials, it returns a token
+      parameters:
+      - description: Email of the admin
+        format: email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Password of the admin
+        format: password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Endpoint used to log in an admin
       tags:
       - admin
 swagger: "2.0"
