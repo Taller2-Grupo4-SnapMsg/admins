@@ -1,6 +1,7 @@
 package main
 
 import (
+	"admins/auth"
 	"admins/docs"
 	"admins/service"
 	"net/http"
@@ -26,12 +27,23 @@ import (
 func SaveAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
 	password := gin_context.Query("password")
-	admin, error := service.SaveAdmin(email, password)
-	if error != nil {
-		gin_context.JSON(http.StatusBadRequest, error)
+	password = auth.HashPassword(password)
+	admin, err := service.SaveAdmin(email, password)
+	if err != nil {
+		gin_context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	gin_context.JSON(http.StatusOK, admin.Email+" is now an admin")
+	if admin == nil {
+		gin_context.JSON(http.StatusBadRequest, "Admin already exists")
+		return
+	}
+	// Create JSON with message and the token for the admin:
+	token, err := auth.GenerateTokenFromMail(email)
+	if err != nil {
+		gin_context.JSON(http.StatusInternalServerError, "Something went wrong.")
+		return
+	}
+	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin saved", "token": token})
 }
 
 // @BasePath /api/v1
@@ -44,10 +56,21 @@ func SaveAdmin(gin_context *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param email query string true "Email of the admin" Format(email)
+// @Param token header string true "Token of the admin" Format(token)
 // @Success 200 {string} Admin found
 // @Router /admin [get]
 func GetAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
+	token := gin_context.GetHeader("token")
+	test, err := auth.GetMailFromToken(token)
+	if err != nil {
+		gin_context.JSON(http.StatusBadRequest, err)
+		return
+	}
+	if test != email {
+		gin_context.JSON(http.StatusBadRequest, "Token doesn't match email")
+		return
+	}
 	admin := service.GetAdmin(email)
 	if admin == nil {
 		gin_context.JSON(http.StatusNotFound, "Admin not found")

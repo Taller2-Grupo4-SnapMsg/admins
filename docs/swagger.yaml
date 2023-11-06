@@ -35,6 +35,12 @@ paths:
         name: email
         required: true
         type: string
+      - description: Token of the admin
+        format: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:

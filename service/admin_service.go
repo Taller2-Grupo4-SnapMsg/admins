@@ -13,7 +13,12 @@ import (
  * @return the admin if it was saved, nil otherwise.
  */
 func SaveAdmin(email string, password string) (*structs.AdminStruct, error) {
-	admin := &structs.AdminStruct{
+	// First we check the admin doesn't exist:
+	admin := GetAdmin(email)
+	if admin != nil {
+		return nil, nil
+	}
+	admin = &structs.AdminStruct{
 		Email:     email,
 		Password:  password,
 		TimeStamp: time.Now().Unix(),

@@ -36,6 +36,14 @@ const docTemplate = `{
                         "name": "email",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "token",
+                        "description": "Token of the admin",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
