@@ -1,6 +1,6 @@
 # admins
 Back end del microservicio de administradores.
-## Agregar esto a tu bashrc:
+## Agregar esto a tu bashrc(si no lo tenes, es para ejecutar cosas de go.):
 `export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin`
 
 
