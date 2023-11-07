@@ -30,7 +30,7 @@ func SaveAdmin(gin_context *gin.Context) {
 	var credentials structs.Credentials
 	// Request a body with JSON:
 	if err := gin_context.ShouldBindJSON(&credentials); err != nil {
-		gin_context.JSON(http.StatusBadRequest, "Invalid request data")
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Invalid request data"})
 		return
 	}
 	email := credentials.Email
@@ -41,13 +41,13 @@ func SaveAdmin(gin_context *gin.Context) {
 		return
 	}
 	if admin == nil {
-		gin_context.JSON(http.StatusBadRequest, "Admin already exists")
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Admin already exists"})
 		return
 	}
 	// Create JSON with message and the token for the admin:
 	token, err := auth.GenerateTokenFromMail(email)
 	if err != nil {
-		gin_context.JSON(http.StatusInternalServerError, "Something went wrong.")
+		gin_context.JSON(http.StatusInternalServerError, gin.H{"detail": "Something went wrong."})
 		return
 	}
 	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin saved", "token": token})
@@ -71,15 +71,15 @@ func GetAdmin(gin_context *gin.Context) {
 	token := gin_context.GetHeader("token")
 	email, err := auth.GetMailFromToken(token)
 	if err != nil {
-		gin_context.JSON(http.StatusBadRequest, "Token is not valid")
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Token is not valid"})
 		return
 	}
 	admin := service.GetAdmin(email)
 	if admin == nil {
-		gin_context.JSON(http.StatusNotFound, "Admin not found")
+		gin_context.JSON(http.StatusNotFound, gin.H{"detail": "Admin not found"})
 		return
 	}
-	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin found", "email": admin.Email, "Time stamp": admin.TimeStamp})
+	gin_context.JSON(http.StatusOK, gin.H{"detail": "Admin found", "email": admin.Email, "Time stamp": admin.TimeStamp})
 }
 
 // @BasePath /api/v1
@@ -101,7 +101,7 @@ func DeleteAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
 	token := gin_context.GetHeader("token")
 	if !verify_token(token) {
-		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Token is not valid"})
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Token is not valid"})
 		return
 	}
 	result, _ := service.DeleteAdmin(email)
@@ -132,18 +132,18 @@ func LogIn(gin_context *gin.Context) {
 
 	// Request a body with JSON:
 	if err := gin_context.ShouldBindJSON(&loginRequest); err != nil {
-		gin_context.JSON(http.StatusBadRequest, "Invalid request data")
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Invalid request data"})
 		return
 	}
 	email := loginRequest.Email
 	password := loginRequest.Password
 	admin := service.GetAdmin(email)
 	if admin == nil {
-		gin_context.JSON(http.StatusNotFound, "Incorrect Credentials")
+		gin_context.JSON(http.StatusNotFound, gin.H{"detail": "Incorrect Credentials"})
 		return
 	}
 	if !auth.VerifyPassword(admin.Password, password) {
-		gin_context.JSON(http.StatusBadRequest, "Incorrect Credentials")
+		gin_context.JSON(http.StatusBadRequest, gin.H{"detail": "Incorrect Credentials"})
 		return
 	}
 	token, err := auth.GenerateTokenFromMail(email)
@@ -151,7 +151,7 @@ func LogIn(gin_context *gin.Context) {
 		gin_context.JSON(http.StatusInternalServerError, "Something went wrong.")
 		return
 	}
-	gin_context.JSON(http.StatusOK, gin.H{"message": "Log In Succesful", "token": token})
+	gin_context.JSON(http.StatusOK, gin.H{"detail": "Log In Succesful", "token": token})
 }
 
 func verify_token(token string) bool {
