@@ -4,6 +4,7 @@ import (
 	"admins/auth"
 	"admins/docs"
 	"admins/service"
+	"admins/structs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,14 +21,20 @@ import (
 // @Tags admin
 // @Accept json
 // @Produce json
-// @Param email query string true "Email of the admin" Format(email)
-// @Param password query string true "Password of the admin" Format(password)
+// @Param credentials body string true "Email and password of the admin" SchemaExample({ "email": "admin@gmail.com", "password": "admin" })
 // @Success 200 {string} Admin saved
+// @Failure 400 {string} Admin already exists
+// @Failure 400 {string} Invalid request data
 // @Router /admin [post]
 func SaveAdmin(gin_context *gin.Context) {
-	email := gin_context.Query("email")
-	password := gin_context.Query("password")
-	password = auth.HashPassword(password)
+	var credentials structs.Credentials
+	// Request a body with JSON:
+	if err := gin_context.ShouldBindJSON(&credentials); err != nil {
+		gin_context.JSON(http.StatusBadRequest, "Invalid request data")
+		return
+	}
+	email := credentials.Email
+	password := credentials.Password
 	admin, err := service.SaveAdmin(email, password)
 	if err != nil {
 		gin_context.JSON(http.StatusBadRequest, err)
@@ -55,15 +62,16 @@ func SaveAdmin(gin_context *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
-// @Param email query string true "Email of the admin" Format(email)
 // @Param token header string true "Token of the admin" Format(token)
 // @Success 200 {string} Admin found
+// @Failure 404 {string} Admin not found
+// @Failure 400 {string} Token is not valid
 // @Router /admin [get]
 func GetAdmin(gin_context *gin.Context) {
-	email := gin_context.Query("email")
 	token := gin_context.GetHeader("token")
-	if !verify_token(token) {
-		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Token is not valid"})
+	email, err := auth.GetMailFromToken(token)
+	if err != nil {
+		gin_context.JSON(http.StatusBadRequest, "Token is not valid")
 		return
 	}
 	admin := service.GetAdmin(email)
@@ -86,6 +94,8 @@ func GetAdmin(gin_context *gin.Context) {
 // @Param email query string true "Email of the admin" Format(email)
 // @Param token header string true "Token for authentification" Format(token)
 // @Success 200 {string} Admin deleted
+// @Failure 404 {string} Admin not found
+// @Failure 400 {string} Token is not valid
 // @Router /admin [delete]
 func DeleteAdmin(gin_context *gin.Context) {
 	email := gin_context.Query("email")
@@ -111,13 +121,22 @@ func DeleteAdmin(gin_context *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
-// @Param email query string true "Email of the admin" Format(email)
-// @Param password query string true "Password of the admin" Format(password)
+// @Param loginRequest body string true "Email and password of the admin" SchemaExample({ "email": "admin@gmail.com", "password": "admin" })
 // @Success 200 {string} Log in succesful
+// @Failure 404 {string} Incorrect credentials
+// @Failure 400 {string} Invalid request data
+// @Failure 500 {string} Something went wrong
 // @Router /admin/login [post]
 func LogIn(gin_context *gin.Context) {
-	email := gin_context.Query("email")
-	password := gin_context.Query("password")
+	var loginRequest structs.Credentials
+
+	// Request a body with JSON:
+	if err := gin_context.ShouldBindJSON(&loginRequest); err != nil {
+		gin_context.JSON(http.StatusBadRequest, "Invalid request data")
+		return
+	}
+	email := loginRequest.Email
+	password := loginRequest.Password
 	admin := service.GetAdmin(email)
 	if admin == nil {
 		gin_context.JSON(http.StatusNotFound, "Incorrect Credentials")

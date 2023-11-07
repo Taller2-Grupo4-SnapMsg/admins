@@ -27,6 +27,14 @@ paths:
           description: OK
           schema:
             type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
       summary: Endpoint used to delete an admin
       tags:
       - admin
@@ -35,12 +43,6 @@ paths:
       - application/json
       description: gets an admin from the database
       parameters:
-      - description: Email of the admin
-        format: email
-        in: query
-        name: email
-        required: true
-        type: string
       - description: Token of the admin
         format: token
         in: header
@@ -54,6 +56,14 @@ paths:
           description: OK
           schema:
             type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
       summary: Endpoint used to get an admin
       tags:
       - admin
@@ -62,23 +72,22 @@ paths:
       - application/json
       description: saves an admin on the database
       parameters:
-      - description: Email of the admin
-        format: email
-        in: query
-        name: email
+      - description: Email and password of the admin
+        in: body
+        name: credentials
         required: true
-        type: string
-      - description: Password of the admin
-        format: password
-        in: query
-        name: password
-        required: true
-        type: string
+        schema:
+          example: '{ "email": "admin@gmail.com", "password": "admin" }'
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
           schema:
             type: string
       summary: Endpoint used to save an admin
@@ -90,23 +99,30 @@ paths:
       - application/json
       description: Given valid credentials, it returns a token
       parameters:
-      - description: Email of the admin
-        format: email
-        in: query
-        name: email
+      - description: Email and password of the admin
+        in: body
+        name: loginRequest
         required: true
-        type: string
-      - description: Password of the admin
-        format: password
-        in: query
-        name: password
-        required: true
-        type: string
+        schema:
+          example: '{ "email": "admin@gmail.com", "password": "admin" }'
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
           schema:
             type: string
       summary: Endpoint used to log in an admin
