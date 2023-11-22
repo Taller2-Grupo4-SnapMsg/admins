@@ -1,8 +1,8 @@
 # File: .github/workflows/workflow.yml
 on:
     push:
-    #   branches:
-    #     - main
+      branches:
+        - main
 name: Deploy-Service (Okteto + Migrations)  
 jobs:
       devflow:
@@ -21,7 +21,7 @@ jobs:
           - name: "Trigger the pipeline"
             uses: okteto/pipeline@latest
             with:
-              name: Back-Login
+              name: admins
               timeout: 8m
               skipIfExists: false
               variables: "DB_HOST=mysql,CONFIG_PATH=/tmp/config.yaml"
