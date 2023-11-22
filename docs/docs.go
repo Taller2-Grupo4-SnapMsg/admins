@@ -150,6 +150,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/health": {
+            "get": {
+                "description": "returns a message if the server is running",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Endpoint used to check if the server is running",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "description": "Given valid credentials, it returns a token",

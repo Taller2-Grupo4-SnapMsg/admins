@@ -155,6 +155,22 @@ func LogIn(gin_context *gin.Context) {
 	gin_context.JSON(http.StatusOK, gin.H{"message": "Log In Succesful", "token": token})
 }
 
+// @BasePath /api/v1
+
+// GetHealth godoc
+// @Summary Endpoint used to check if the server is running
+// @Schemes
+// @Description returns a message if the server is running
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Success 200 {string} Server is running
+// @Router /admin/health [get]
+func GetHealth(gin_context *gin.Context) {
+	// Here we can add a more complex response if needed.
+	gin_context.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
 func verify_token(token string) bool {
 	_, err := auth.GetMailFromToken(token)
 	return err == nil
@@ -170,6 +186,7 @@ func main() {
 			admin.POST("/", SaveAdmin)
 			admin.POST("/login", LogIn)
 			admin.GET("/", GetAdmin)
+			admin.GET("/health", GetHealth)
 			admin.DELETE("/", DeleteAdmin)
 		}
 	}

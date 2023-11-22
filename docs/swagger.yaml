@@ -93,6 +93,21 @@ paths:
       summary: Endpoint used to save an admin
       tags:
       - admin
+  /admin/health:
+    get:
+      consumes:
+      - application/json
+      description: returns a message if the server is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Endpoint used to check if the server is running
+      tags:
+      - admin
   /admin/login:
     post:
       consumes:
