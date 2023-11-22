@@ -24,5 +24,6 @@ jobs:
               name: admins
               timeout: 8m
               skipIfExists: false
+              args: -f docker-compose-okteto.yml up
               variables: "DB_HOST=mysql,CONFIG_PATH=/tmp/config.yaml"
     
