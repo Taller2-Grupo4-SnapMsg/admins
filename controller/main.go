@@ -168,7 +168,11 @@ func LogIn(gin_context *gin.Context) {
 // @Router /admin/health [get]
 func GetHealth(gin_context *gin.Context) {
 	// Here we can add a more complex response if needed.
-	gin_context.JSON(http.StatusOK, gin.H{"status": "ok"})
+	gin_context.JSON(http.StatusOK, gin.H{
+		"status":        "ok",
+		"description":   "Micro service that handles admin authentication.",
+		"creation_date": "30-10-2023",
+	})
 }
 
 func verify_token(token string) bool {
