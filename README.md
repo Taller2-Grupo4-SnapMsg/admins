@@ -83,6 +83,15 @@ go install honnef.co/go/tools/cmd/staticcheck@latest
 ```
 Se corre con
 `saticcheck ./...`
+## Uptrace:
+```bash
+go get github.com/uptrace/uptrace-go
+```
+## OpenTelemetry:
+```bash
+go get go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin
+```
+
 
 ## Swagger:
 Segui los pasos de aca:
