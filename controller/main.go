@@ -5,6 +5,7 @@ import (
 	"admins/docs"
 	"admins/service"
 	"admins/structs"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ func SaveAdmin(gin_context *gin.Context) {
 	var credentials structs.Credentials
 	// Request a body with JSON:
 	if err := gin_context.ShouldBindJSON(&credentials); err != nil {
+		log.Fatal("[ERROR] Error binding JSON: ", err)
 		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
 		return
 	}
@@ -42,15 +44,18 @@ func SaveAdmin(gin_context *gin.Context) {
 		return
 	}
 	if admin == nil {
+		log.Println("[INFO] Admin ", email, " already exists")
 		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Admin already exists"})
 		return
 	}
 	// Create JSON with message and the token for the admin:
 	token, err := auth.GenerateTokenFromMail(email)
 	if err != nil {
+		log.Fatal("[ERROR] Error generating token: ", err)
 		gin_context.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong."})
 		return
 	}
+	log.Println("[INFO] Admin ", email, " has been registered")
 	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin saved", "token": token})
 }
 
@@ -80,6 +85,7 @@ func GetAdmin(gin_context *gin.Context) {
 		gin_context.JSON(http.StatusNotFound, gin.H{"message": "Admin not found"})
 		return
 	}
+	log.Println("[INFO] Admin ", email, " has been requested by token")
 	gin_context.JSON(http.StatusOK, gin.H{"message": "Admin found", "email": admin.Email, "Time stamp": admin.TimeStamp})
 }
 
@@ -133,6 +139,7 @@ func LogIn(gin_context *gin.Context) {
 
 	// Request a body with JSON:
 	if err := gin_context.ShouldBindJSON(&loginRequest); err != nil {
+		log.Fatal("[ERROR] Error binding JSON: ", err)
 		gin_context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
 		return
 	}
@@ -140,18 +147,22 @@ func LogIn(gin_context *gin.Context) {
 	password := loginRequest.Password
 	admin := service.GetAdmin(email)
 	if admin == nil {
+		log.Fatal("[ERROR] Admin doesn't exist")
 		gin_context.JSON(http.StatusNotFound, gin.H{"message": "Incorrect Credentials"})
 		return
 	}
 	if !auth.VerifyPassword(admin.Password, password) {
+		log.Fatal("[ERROR] Password doesn't match")
 		gin_context.JSON(http.StatusNotFound, gin.H{"message": "Incorrect Credentials"})
 		return
 	}
 	token, err := auth.GenerateTokenFromMail(email)
 	if err != nil {
+		log.Fatal("[ERROR] Error generating token: ", err)
 		gin_context.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong."})
 		return
 	}
+	log.Println("[INFO] Admin ", email, " has logged in")
 	gin_context.JSON(http.StatusOK, gin.H{"message": "Log In Succesful", "token": token})
 }
 
