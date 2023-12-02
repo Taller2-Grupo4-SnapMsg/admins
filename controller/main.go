@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/uptrace/uptrace-go/uptrace"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 // @BasePath /api/v1
@@ -192,7 +194,14 @@ func verify_token(token string) bool {
 }
 
 func main() {
+	uptrace.ConfigureOpentelemetry(
+		uptrace.WithDSN("https://SAe6OtAs8ysrYmkJmM8t-Q@api.uptrace.dev?grpc=4317"),
+		uptrace.WithServiceName("back-admins"),
+		uptrace.WithServiceVersion("v1.0.0"),
+		uptrace.WithDeploymentEnvironment("production"),
+	)
 	router := gin.Default()
+	router.Use(otelgin.Middleware("back-admins"))
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := router.Group("/api/v1")
 	{
