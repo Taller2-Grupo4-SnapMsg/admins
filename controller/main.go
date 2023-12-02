@@ -5,8 +5,10 @@ import (
 	"admins/docs"
 	"admins/service"
 	"admins/structs"
+
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -195,7 +197,7 @@ func verify_token(token string) bool {
 
 func main() {
 	uptrace.ConfigureOpentelemetry(
-		uptrace.WithDSN("https://SAe6OtAs8ysrYmkJmM8t-Q@api.uptrace.dev?grpc=4317"),
+		uptrace.WithDSN(os.Getenv("UPTRACE_DSN")),
 		uptrace.WithServiceName("back-admins"),
 		uptrace.WithServiceVersion("v1.0.0"),
 		uptrace.WithDeploymentEnvironment("production"),
